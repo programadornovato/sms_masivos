@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- Otros componentes ya existentes -->
+
+    <EditText
+        android:id="@+id/evMuestraTels"
+        android:layout_width="403dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@android:drawable/ic_menu_sort_by_size"
+        android:hint="Lista telefonos enviados"
+        android:inputType="textMultiLine"
+        android:maxLines="4"
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbars="vertical"
+        android:textIsSelectable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="7dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <EditText
+            android:id="@+id/txtHoraIni"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/ic_menu_recent_history"
+            android:ems="10"
+            android:hint="HoraIni"
+            android:inputType="number|numberDecimal"
+            android:text="9"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/txtHoraFin"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/ic_menu_recent_history"
+            android:ems="10"
+            android:hint="HoraFin"
+            android:inputType="number|numberDecimal"
+            android:text="20"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/txtLimite"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/arrow_up_float"
+            android:ems="10"
+            android:hint="limite"
+            android:inputType="number|numberDecimal"
+            android:text="0"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/txtOffset"
+            android:layout_width="117dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/arrow_down_float"
+            android:ems="10"
+            android:hint="offset"
+            android:inputType="number|numberDecimal"
+            android:text="2"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btnGuardaLim"
+            android:layout_width="80dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:drawableBottom="@android:drawable/ic_menu_save"
+            android:onClick="btnGuardaLim" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <EditText
+            android:id="@+id/txtTiempoReset"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/ic_menu_recent_history"
+            android:ems="10"
+            android:hint="T. resetear"
+            android:inputType="number|numberDecimal"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/txtTeimpoEspera"
+            android:layout_width="120sp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableStart="@android:drawable/ic_menu_recent_history"
+            android:ems="10"
+            android:hint="T. espera"
+            android:inputType="number|numberDecimal"
+            android:textSize="14sp" />
+
+        <CheckBox
+            android:id="@+id/activaReg"
+            android:layout_width="80dp"
+            android:layout_height="50dp"
+            android:text="Cuent reg"
+            tools:text="Cuenta reg" />
+
+        <TextView
+            android:id="@+id/tvMuestraReg"
+            android:layout_width="70dp"
+            android:layout_height="25dp"
+            android:text="Tiempo resta"
+            android:textColor="#FF0000"
+            android:textSize="18sp"
+            tools:text="Tiempo resta" />
+
+        <Button
+            android:id="@+id/btnEnviaSmsServ"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:drawableBottom="@android:drawable/ic_menu_slideshow"
+            android:onClick="clickEnviaSms" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@android:drawable/progress_indeterminate_horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/evMuestraTels">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sel sim" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupSim"
+            android:layout_width="100sp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioButtonSim1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/radioButtonSim2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/phoneNumberEditText"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:drawableStart="@android:drawable/ic_menu_call"
+            android:hint="Número de teléfono"
+            android:inputType="phone" />
+
+        <Button
+            android:id="@+id/btnguardarTelefono"
+            android:layout_width="40dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:drawableBottom="@android:drawable/ic_menu_save"
+            android:onClick="btnguardarTelefono" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+        <EditText
+            android:id="@+id/SimTel1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@android:drawable/stat_sys_phone_call"
+            android:ems="10"
+            android:hint="SimTelefono1"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/SimTel2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@android:drawable/stat_sys_phone_call"
+            android:ems="10"
+            android:hint="SimTelefono2"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/GuardarSimTel"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableBottom="@android:drawable/ic_menu_save"
+            android:onClick="GuardarSimTel" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+
+        <Spinner
+            android:id="@+id/spListaMensajes"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/messageEditText"
+            style="@android:style/Widget.Holo.Light.EditText"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:drawableStart="@android:drawable/stat_notify_chat"
+            android:hint="Mensaje"
+            android:inputType="textMultiLine"
+            android:text="envio"
+            android:textSize="14sp"
+            app:layout_constraintHeight_percent="0.3" />
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:drawableBottom="@android:drawable/ic_menu_send"
+            android:onClick="enviarUnMensaje" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
+
+        <EditText
+            android:id="@+id/etNombreEquipo"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Nombre equipo"
+            android:inputType="text" />
+
+        <EditText
+            android:id="@+id/edNumeroNotificar"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="# Notificar"
+            android:inputType="number|numberDecimal" />
+
+        <CheckBox
+            android:id="@+id/chEnviaSMS"
+            android:layout_width="100dp"
+            android:layout_height="60sp"
+            android:layout_weight="1"
+            android:checked="true"
+            android:onClick="clickChEnviaSMS"
+            android:text="Envia SMS" />
+
+        <Button
+            android:id="@+id/btnGuardaEquipo"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableBottom="@android:drawable/ic_menu_save"
+            android:onClick="btnGuardaEquipo" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+
+        <TextView
+            android:id="@+id/tvNotifica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="tvNotifica" />
+
+        <TextView
+            android:id="@+id/tvNotificaHora"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="tvNotificaHora" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
