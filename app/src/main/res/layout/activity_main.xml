@@ -28,11 +28,10 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="57dp"
-        android:layout_marginTop="7dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/txtUrl">
 
         <EditText
             android:id="@+id/txtHoraIni"
@@ -56,30 +55,6 @@
             android:hint="HoraFin"
             android:inputType="number|numberDecimal"
             android:text="20"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/txtLimite"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableStart="@android:drawable/arrow_up_float"
-            android:ems="10"
-            android:hint="limite"
-            android:inputType="number|numberDecimal"
-            android:text="0"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/txtOffset"
-            android:layout_width="117dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawableStart="@android:drawable/arrow_down_float"
-            android:ems="10"
-            android:hint="offset"
-            android:inputType="number|numberDecimal"
-            android:text="2"
             android:textSize="14sp" />
 
         <Button
@@ -223,7 +198,7 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
         <EditText
             android:id="@+id/SimTel1"
@@ -252,42 +227,6 @@
             android:layout_weight="1"
             android:drawableBottom="@android:drawable/ic_menu_save"
             android:onClick="GuardarSimTel" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
-
-        <Spinner
-            android:id="@+id/spListaMensajes"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <EditText
-            android:id="@+id/messageEditText"
-            style="@android:style/Widget.Holo.Light.EditText"
-            android:layout_width="150dp"
-            android:layout_height="80dp"
-            android:drawableStart="@android:drawable/stat_notify_chat"
-            android:hint="Mensaje"
-            android:inputType="textMultiLine"
-            android:text="envio"
-            android:textSize="14sp"
-            app:layout_constraintHeight_percent="0.3" />
-
-        <Button
-            android:id="@+id/sendButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:drawableBottom="@android:drawable/ic_menu_send"
-            android:onClick="enviarUnMensaje" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -359,5 +298,18 @@
             android:layout_weight="1"
             android:text="tvNotificaHora" />
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/txtUrl"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Url"
+        android:inputType="text"
+        android:text="https://pastebin.com/raw/wSygXS1K"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -58,12 +58,11 @@ import android.app.Application
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.StringRequest
 class MainActivity : AppCompatActivity() {
+    lateinit var txtUrl: EditText
     lateinit var evMuestraTels: EditText
     lateinit var phoneNumberEditText:EditText
     lateinit var messageEditText:EditText
     lateinit var sendButton:Button
-    lateinit var txtLimite:EditText
-    lateinit var txtOffset:EditText
     lateinit var txtHoraIni:EditText
     lateinit var txtHoraFin:EditText
     lateinit var SimTel1:EditText
@@ -97,10 +96,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         //MANTENER ACTIVA LA PANTALLA
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        txtUrl = findViewById<EditText>(R.id.txtUrl)
         evMuestraTels = findViewById<EditText>(R.id.evMuestraTels)
         evMuestraTels.movementMethod = ScrollingMovementMethod()
-        txtLimite = findViewById<EditText>(R.id.txtLimite)
-        txtOffset = findViewById<EditText>(R.id.txtOffset)
         txtHoraIni = findViewById<EditText>(R.id.txtHoraIni)
         txtHoraFin = findViewById<EditText>(R.id.txtHoraFin)
         txtTiempoReset = findViewById(R.id.txtTiempoReset)
@@ -112,13 +110,11 @@ class MainActivity : AppCompatActivity() {
         SimTel2 = findViewById<EditText>(R.id.SimTel2)
         etNombreEquipo = findViewById<EditText>(R.id.etNombreEquipo)
         edNumeroNotificar = findViewById<EditText>(R.id.edNumeroNotificar)
-        spListaMensajes = findViewById(R.id.spListaMensajes)
         radioGroupSim = findViewById(R.id.radioGroupSim)
         radioButtonSim1 = findViewById(R.id.radioButtonSim1)
         radioButtonSim2 = findViewById(R.id.radioButtonSim2)
         tvNotificaHora = findViewById<TextView>(R.id.tvNotificaHora)
         tvNotifica = findViewById<TextView>(R.id.tvNotifica)
-        llenaSpin()
         val sharedPref = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         // 120 es el valor predeterminado en caso de que no haya nada guardado.
         val savedTime = sharedPref.getString("timeReset", "120")
@@ -161,8 +157,6 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECEIVE_SMS), 1001)
         }
         phoneNumberEditText = findViewById(R.id.phoneNumberEditText)
-        messageEditText = findViewById(R.id.messageEditText)
-        sendButton = findViewById(R.id.sendButton)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -173,40 +167,6 @@ class MainActivity : AppCompatActivity() {
         cargarValoresSimTel()
         cargarDatosEquipo()
         phoneNumberEditText.setText(savedPhoneNumber)
-        spListaMensajes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val selectedItem = parent?.getItemAtPosition(position).toString()
-
-                // Llama a la función que deseas ejecutar
-                btnColocarMensajes()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // Aquí puedes manejar el caso en el que no se selecciona ningún elemento, si es necesario.
-            }
-        }
-    }
-    fun fetchCsvUsingVolley() {
-        val url = "https://pastebin.com/raw/tmjCa6gn"
-
-        val stringRequest = StringRequest(Request.Method.GET, url,
-            { response ->
-                // Procesar el contenido CSV
-                val lines = response.split("\n")
-                for (line in lines) {
-                    val columns = line.split(",")
-                    val id = columns[0]
-                    val name = columns[1]
-                    val message = columns[2]
-                    println("ID: $id, Name: $name, Message: $message")
-                }
-            },
-            { error ->
-                println("Error al obtener el CSV: ${error.message}")
-            })
-
-        // Añadir la solicitud a la cola
-        (applicationContext as MyApp).requestQueue.add(stringRequest)
     }
     private fun startCountDown() {
         val timeMillis = txtTiempoReset.text.toString().toLongOrNull() ?: return
@@ -245,7 +205,7 @@ class MainActivity : AppCompatActivity() {
                     //SI ESTA ACTIVO EL ENVIAR SMS SE ENVIA EL SMS
                     if(chEnviaSMS.isChecked==true){
                         //ENVIAMOS EL SMS
-                        enviaSmsServidor(txtLimite.text.toString(),txtOffset.text.toString());
+                        enviaSmsServidor();
                         //CADA x CICLOS NOTIFICARNOS CON UN SMS
                         var numeroNotificar= edNumeroNotificar.text.toString().toInt()
                         if(contadorReinicia>=numeroNotificar){
@@ -417,124 +377,94 @@ class MainActivity : AppCompatActivity() {
 
         return simSubIds
     }
-    fun enviaSmsServidor(limite: String, offset: String) {
+    fun enviaSmsServidor() {
         val SimTel1Value = SimTel1.text.toString()
         val SimTel2Value = SimTel2.text.toString()
         val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-        // Mostrar el ProgressBar
         progressBar.visibility = View.VISIBLE
 
         val queue = Volley.newRequestQueue(this)
-        val url = "https://chiapasmerecemas.com/wp-json/mycustomnamespace/v1/myendpoint/?password=chiapas22&limite=$limite&offset=$offset"
-        val idUsers = mutableListOf<String>()
-        val jsonArrayRequest = JsonArrayRequest(
-            Request.Method.GET, url, null,
+        val url = txtUrl.text.toString()
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
             { response ->
-                val totalMensajes = response.length()
+                val lines = response.split("\n")
+                val totalMensajes = lines.size
 
                 val mensajesSIM1: Int
                 val mensajesSIM2: Int
 
                 when {
                     simSubIds[0] != -1 && simSubIds[1] != -1 -> {
-                        // Ambas SIMs presentes
                         mensajesSIM1 = totalMensajes / 2
                         mensajesSIM2 = totalMensajes - mensajesSIM1
                     }
                     simSubIds[0] != -1 -> {
-                        // Solo SIM 1 presente
                         mensajesSIM1 = totalMensajes
                         mensajesSIM2 = 0
                     }
                     simSubIds[1] != -1 -> {
-                        // Solo SIM 2 presente
                         mensajesSIM1 = 0
                         mensajesSIM2 = totalMensajes
                     }
                     else -> {
-                        // Ninguna SIM presente
                         mensajesSIM1 = 0
                         mensajesSIM2 = 0
                     }
                 }
-                if (mensajesSIM1 == 0 && mensajesSIM2 == 0) {
-                    showAlertError("No hay tarjetas SIM disponibles.")
-                    return@JsonArrayRequest
-                }
-                val userRecords = mutableListOf<JSONObject>()
-                for (i in 0 until totalMensajes) {
-                    val jsonObject = response.getJSONObject(i)
 
-                    val descripcionPlantilla = jsonObject.getString("descripcion_plantilla")
-                    val partes = descripcionPlantilla.split("|")
-                    val indiceAleatorio = Random().nextInt(partes.size)
-                    var descripcionPlantillaSeleccionada = partes[indiceAleatorio]
+                for (i in lines.indices) {
+                    val columns = lines[i].split(",")
 
-                    val idUser = jsonObject.getString("ID")
-                    idUsers.add(idUser)
-                    val displayName = jsonObject.getString("display_name")
-                    var telefono = jsonObject.getString("user_login")
-
-
+                    val telefonoOriginal = columns[0]
+                    val displayName = columns[1]
+                    var descripcionPlantillaSeleccionada = columns[2]
+                    val textoEnviar="Hola "+displayName+" "+descripcionPlantillaSeleccionada
+                    var telefono = telefonoOriginal
                     if (telefono.startsWith("52")) {
                         telefono = telefono.substring(2)
                     }
-                    descripcionPlantillaSeleccionada = descripcionPlantillaSeleccionada.replace("{nombre_cliente}", displayName)
 
-                    var estado = "enviado"
+                    var subIdToSend = -1
+                    if (i < mensajesSIM1) {
+                        subIdToSend = simSubIds[0]
+                    } else {
+                        subIdToSend = simSubIds[1]
+                    }
+
                     try {
-                        var subIdToSend = -1
-                        if (i < mensajesSIM1) {
-                            subIdToSend = simSubIds[0]
-                        } else {
-                            subIdToSend = simSubIds[1]
-                        }
-                        sendSms(telefono, descripcionPlantillaSeleccionada, subIdToSend)
+                        sendSms(telefono, textoEnviar, subIdToSend)
                         evMuestraTels.setText("${evMuestraTels.text}$telefono | $displayName | $subIdToSend\n")
+
                         val userRecord = JSONObject().apply {
-                            put("ID", idUser)
+                            put("ID", telefonoOriginal)
                             if (subIdToSend == simSubIds[0]) {
                                 put("phoneNumber", SimTel1Value)
                             } else {
                                 put("phoneNumber", SimTel2Value)
                             }
                         }
-                        userRecords.add(userRecord)
-
                     } catch (e: Exception) {
-                        estado = "error"
                         showAlertError(e.message)
                     }
-                    var txtTeimpoEsperaL=txtTeimpoEspera.text.toString().toLong()
-                    txtTeimpoEsperaL *= 1000L
-                    pausa(txtTeimpoEsperaL)
-                }
-                // Convertir userRecords a JSON y enviar via POST
-                val jsonBody = JSONObject().apply {
-                    put("userRecords", JSONArray(userRecords))
-                }
-                val postUrl = "https://chiapasmerecemas.com/wp-json/mycustomnamespace/v1/update_sms_status/?password=chiapas22"
-                val jsonObjectRequest = JsonObjectRequest(Request.Method.POST, postUrl, jsonBody,
-                    { response ->
-                        Toast.makeText(this, "SUBIDO Y ACTUALIZADO", Toast.LENGTH_SHORT).show()
-                    },
-                    { error ->
-                        Toast.makeText(this, "ERROR "+error.toString(), Toast.LENGTH_SHORT).show()
-                        error.printStackTrace()
-                    })
 
-                Volley.newRequestQueue(this).add(jsonObjectRequest)
-                // Ocultar el ProgressBar
+                    val txtTiempoEsperaL = txtTeimpoEspera.text.toString().toLong() * 1000L
+                    Thread.sleep(txtTiempoEsperaL)
+                }
+
                 progressBar.visibility = View.GONE
             },
             { error ->
                 error.printStackTrace()
+                progressBar.visibility = View.GONE
             }
         )
-        queue.add(jsonArrayRequest)
-        //EMITIR UN SONIDO
+
+        queue.add(stringRequest)
         playDefaultNotificationSound(RingtoneManager.TYPE_NOTIFICATION)
     }
+
     fun playDefaultNotificationSound(tipoTono:Int) {
         val notification = RingtoneManager.getDefaultUri(tipoTono)
         currentRingtone = RingtoneManager.getRingtone(applicationContext, notification)
@@ -542,7 +472,7 @@ class MainActivity : AppCompatActivity() {
     }
     fun clickEnviaSms(view:View){
         evMuestraTels.setText("")
-        enviaSmsServidor(txtLimite.text.toString(),txtOffset.text.toString());
+        enviaSmsServidor();
     }
 
 
@@ -560,17 +490,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun btnGuardaLim(view: View){
-        val txtLimiteS=txtLimite.text.toString()
-        val txtOffsetS=txtOffset.text.toString()
         val txtHoraIniS=txtHoraIni.text.toString()
         val txtHoraFinS=txtHoraFin.text.toString()
-        guardarEnSharedPreferences(txtHoraIniS,txtHoraFinS,txtLimiteS, txtOffsetS)
+        guardarEnSharedPreferences(txtHoraIniS,txtHoraFinS)
     }
-    fun guardarEnSharedPreferences(horaIni: String,horaFin: String, limite: String, offset: String) {
+    fun guardarEnSharedPreferences(horaIni: String,horaFin: String) {
         val sharedPreferences = getSharedPreferences("misPreferencias", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putString("LIMITE", limite)
-        editor.putString("OFFSET", offset)
         editor.putString("horaIni", horaIni)
         editor.putString("horaFin", horaFin)
         editor.apply()
@@ -590,8 +516,6 @@ class MainActivity : AppCompatActivity() {
         val txtHoraIniGuardado = sharedPreferences.getString("horaIni", "8")  // El segundo parámetro es un valor por defecto en caso de que no exista.
         val txtHoraFinGuardado = sharedPreferences.getString("horaFin", "20")  // El segundo parámetro es un valor por defecto en caso de que no exista.
 
-        txtLimite.setText(limiteGuardado)
-        txtOffset.setText(offsetGuardado)
         txtHoraIni.setText(txtHoraIniGuardado)
         txtHoraFin.setText(txtHoraFinGuardado)
     }
@@ -645,38 +569,4 @@ class MainActivity : AppCompatActivity() {
         SimTel2.setText(simTel2Value)
     }
     //al hacer click en el boton btnColocarMensajes tomar el item del spListaMensajes que esta seleccionado y colocarlo en  el edittext messageEditText
-    fun btnColocarMensajes(){
-        // Obtener una referencia al Spinner y al EditText
-        val spListaMensajes: Spinner = findViewById(R.id.spListaMensajes)
-        val messageEditText: EditText = findViewById(R.id.messageEditText)
-        // Obtener el ítem seleccionado del Spinner
-        val selectedItem = spListaMensajes.selectedItem as String
-        // Establecer el valor en el EditText
-        messageEditText.setText(selectedItem)
-    }
-    fun llenaSpin(){
-        // Request a JSONArray response from the provided URL.
-        val jsonArrayRequest = JsonArrayRequest(
-            Request.Method.GET,
-            "https://chiapasmerecemas.com/wp-json/mycustomnamespace/v1/myendpoint/?password=chiapas22&limite=0&offset=1",
-            null,
-            { response ->
-                // Parse the result
-                val jsonObject = response.getJSONObject(0)
-                val descripcionPlantilla = jsonObject.getString("descripcion_plantilla")
-                val partes = descripcionPlantilla.split("|").toTypedArray()
-
-                // Populate the spinner
-                val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, partes)
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-                spListaMensajes.adapter = adapter
-            },
-            { error ->
-                // TODO: Handle error
-            }
-        )
-
-        // Add the request to the RequestQueue.
-        Volley.newRequestQueue(this).add(jsonArrayRequest)
-    }
 }
